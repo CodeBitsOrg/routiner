@@ -35,10 +35,10 @@ func (r *Routiner) Run(
 	}
 
 	for i := 1; i <= r.Workers; i++ {
-		go runWorker(r, worker)
+		go r.runWorker(worker)
 	}
 
-	go runManager(r, manager)
+	go r.runManager(manager)
 
 	for {
 		select {
@@ -77,17 +77,17 @@ func (r *Routiner) Recover() func() {
 	return f
 }
 
-func runManager(r *Routiner, manager func(r *Routiner)) {
+func (r *Routiner) runManager(manager func(r *Routiner)) {
 	// Recover the application in case of a panic.
 	defer r.Recover()()
 
-	// Call manager method from the routiner's handler.
+	// Call manager method from the routine's handler.
 	manager(r)
 
 	r.Finish()
 }
 
-func runWorker(r *Routiner, worker func(r *Routiner, input interface{})) {
+func (r *Routiner) runWorker(worker func(r *Routiner, input interface{})) {
 	// Recover the application in case of a panic.
 	defer r.Recover()()
 
