@@ -1,3 +1,3 @@
 module github.com/CodeBitsOrg/routiner
 
-go 1.18
+go 1.21

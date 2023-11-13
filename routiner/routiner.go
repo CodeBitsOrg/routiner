@@ -43,9 +43,8 @@ func (r *Routiner) Run(
 	for {
 		select {
 		case message := <-r.Output:
-			fmt.Println(message)
+			log.Println(message)
 		case <-r.Quit:
-			fmt.Println("The task has been finished :)")
 			close(r.Output)
 			return
 		}

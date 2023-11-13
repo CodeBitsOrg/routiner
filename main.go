@@ -21,10 +21,12 @@ func main() {
 	worker := func(r *routiner.Routiner, o interface{}) {
 		obj := o.(inputObject)
 		time.Sleep(time.Second)
-		r.Info(fmt.Sprintf("Worker %d \n*****", obj.ID))
+		r.Info(fmt.Sprintf("Worker %d", obj.ID))
 	}
 
 	r.Run(manager, worker)
+
+	fmt.Println("The task has been finished :)")
 }
 
 type inputObject struct {
