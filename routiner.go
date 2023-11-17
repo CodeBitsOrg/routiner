@@ -66,6 +66,7 @@ func (r *Routiner) Finish() {
 	r.Quit <- 0
 }
 
+// Recover the application in case of a panic.
 func (r *Routiner) Recover() func() {
 	f := func() {
 		if err := recover(); err != nil {
@@ -77,17 +78,14 @@ func (r *Routiner) Recover() func() {
 }
 
 func (r *Routiner) runManager(manager func(r *Routiner)) {
-	// Recover the application in case of a panic.
 	defer r.Recover()()
 
-	// Call manager method from the routine's handler.
 	manager(r)
 
 	r.Finish()
 }
 
 func (r *Routiner) runWorker(worker func(r *Routiner, input interface{})) {
-	// Recover the application in case of a panic.
 	defer r.Recover()()
 
 	for {

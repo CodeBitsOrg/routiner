@@ -18,18 +18,8 @@ func TestRun(t *testing.T) {
 
 	numberOfOperations := 4
 
-	manager := func(r *Routiner) {
-		for i := 1; i <= numberOfOperations; i++ {
-			r.Work(inputObject{ID: i})
-		}
-	}
+	r, manager, worker := scaffold()
 
-	worker := func(r *Routiner, o interface{}) {
-		obj := o.(inputObject)
-		r.Info(fmt.Sprintf("Worker %d", obj.ID))
-	}
-
-	r := Routiner{}
 	r.Run(manager, worker)
 
 	logOutput := buf.String()
@@ -41,25 +31,22 @@ func TestRun(t *testing.T) {
 	}
 }
 
-type inputObject struct {
-	ID int
+// Initialize Routiner and its manager and worker functions.
+func scaffold() (Routiner, func(r *Routiner), func(r *Routiner, o interface{})) {
+	r := Routiner{
+		Workers: 4,
+	}
+
+	manager := func(r *Routiner) {
+		for i := 1; i <= 4; i++ {
+			r.Work(i)
+		}
+	}
+
+	worker := func(r *Routiner, o interface{}) {
+		id := o.(int)
+		r.Info(fmt.Sprintf("Worker %d", id))
+	}
+
+	return r, manager, worker
 }
-
-// func scaffold() (Routiner, func(r *Routiner), func(r *Routiner, o interface{})) {
-// 	r := Routiner{
-// 		Workers: 4,
-// 	}
-
-// 	manager := func(r *Routiner) {
-// 		for i := 1; i <= 4; i++ {
-// 			r.Work(inputObject{ID: i})
-// 		}
-// 	}
-
-// 	worker := func(r *Routiner, o interface{}) {
-// 		obj := o.(inputObject)
-// 		r.Info(obj.ID)
-// 	}
-
-// 	return r, manager, worker
-// }
