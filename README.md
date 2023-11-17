@@ -41,3 +41,11 @@ type inputObject struct {
 	ID int
 }
 ```
+
+- Also note that it's possible to pass simple type: **int**, **string** etc. Then, in your worker clouser you just need to assert to that type:
+
+```golang
+worker := func(r *routiner.Routiner, o interface{}) {
+    obj := o.(string) // o.(int)
+    ...
+```
